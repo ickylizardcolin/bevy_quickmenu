@@ -3,7 +3,9 @@
 //! styles are mostly used to define the looks of menus and the different
 //! control states of buttons.
 
-use bevy::prelude::*;
+use bevy::{prelude::*, text::FontSmoothing};
+
+use bevy::ecs::component::Component;
 
 #[derive(Debug, Clone, Copy)]
 pub struct ControlState {
@@ -72,6 +74,7 @@ pub struct StyleEntry {
     pub hover: ControlState,
     pub selected: ControlState,
     pub icon_style: IconStyle,
+    pub font_smoothing: Option<FontSmoothing>, // added
 }
 
 impl StyleEntry {
@@ -84,6 +87,7 @@ impl StyleEntry {
             hover: ControlState::hover(),
             selected: ControlState::selected(),
             icon_style: IconStyle::default(),
+            font_smoothing: todo!(),
         }
     }
 
@@ -97,6 +101,7 @@ impl StyleEntry {
             hover: ControlState::clear(gray),
             selected: ControlState::clear(gray),
             icon_style: IconStyle::default(),
+            font_smoothing: todo!(),
         }
     }
 
@@ -109,6 +114,7 @@ impl StyleEntry {
             hover: ControlState::clear(Color::WHITE),
             selected: ControlState::clear(Color::WHITE),
             icon_style: IconStyle::default(),
+            font_smoothing: todo!(),
         }
     }
 }
@@ -119,7 +125,7 @@ pub struct Stylesheet {
     pub label: StyleEntry,
     pub headline: StyleEntry,
     pub vertical_spacing: f32,
-    pub style: Option<Style>,
+    pub style: Option<Node>,
     pub background: Option<BackgroundColor>,
 }
 
@@ -142,7 +148,7 @@ impl Stylesheet {
         self
     }
 
-    pub fn with_style(mut self, style: Style) -> Self {
+    pub fn with_style(mut self, style: Node) -> Self {
         self.style = Some(style);
         self
     }

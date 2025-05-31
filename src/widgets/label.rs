@@ -2,6 +2,7 @@ use super::Widget;
 use crate::style::StyleEntry;
 use crate::types::{MenuAssets, WidgetLabel};
 use bevy::prelude::*;
+use bevy::text::{FontSmoothing, LineHeight};
 
 pub struct LabelWidget<'a> {
     text: &'a WidgetLabel,
@@ -15,20 +16,23 @@ impl<'a> LabelWidget<'a> {
 }
 
 impl<'a> Widget for LabelWidget<'a> {
-    fn build(self, parent: &mut ChildBuilder, assets: &MenuAssets) {
+    fn build(self, parent: &mut ChildSpawnerCommands, assets: &MenuAssets) {
         let LabelWidget { text, style, .. } = self;
 
         let (bg, fg) = (style.normal.bg, style.selected.fg);
 
-        let text_style = TextStyle {
+        let text_style = TextFont {
             font: assets.font.clone(),
             font_size: style.size,
-            color: fg,
+            line_height: LineHeight::RelativeToFont(style.size),
+            font_smoothing: style.font_smoothing,
         };
+
+        let text_color = TextColor::from(fg);
 
         parent
             .spawn(ButtonBundle {
-                style: Style {
+                style: Node {
                     margin: style.margin,
                     padding: style.padding,
                     justify_content: JustifyContent::Center,

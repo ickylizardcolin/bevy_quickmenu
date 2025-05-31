@@ -2,10 +2,11 @@ use std::borrow::Cow;
 use std::hash::Hash;
 
 use crate::ScreenTrait;
+use bevy::image::CompressedImageFormats;
+use bevy::image::{ImageSampler, ImageType};
 use bevy::prelude::*;
 use bevy::render::render_asset::RenderAssetUsages;
-use bevy::render::texture::{CompressedImageFormats, ImageSampler, ImageType};
-use bevy::utils::HashMap;
+use bevy_platform::collections::HashMap;
 
 #[derive(Component)]
 pub struct QuickMenuComponent;
@@ -65,7 +66,7 @@ where
 {
     pub id: WidgetId,
     pub entries: Vec<MenuItem<S>>,
-    pub style: Option<Style>,
+    pub style: Option<Node>,
     pub background: Option<BackgroundColor>,
 }
 
@@ -88,7 +89,7 @@ where
         self
     }
 
-    pub fn with_style(mut self, style: Style) -> Self {
+    pub fn with_style(mut self, style: Node) -> Self {
         self.style = Some(style);
         self
     }
@@ -104,7 +105,7 @@ where
     Action(WidgetLabel, MenuIcon, S::Action),
     Label(WidgetLabel, MenuIcon),
     Headline(WidgetLabel, MenuIcon),
-    Image(Handle<Image>, Option<Style>),
+    Image(Handle<Image>, Option<Node>),
 }
 
 impl<S> MenuItem<S>
@@ -297,23 +298,45 @@ pub enum WidgetLabel {
 }
 
 impl WidgetLabel {
-    pub fn bundle(&self, default_style: &TextStyle) -> TextBundle {
+    pub fn bundle(
+        &self,
+        default_font: &TextFont,
+        default_font_color: &TextColor,
+    ) -> Vec<(Text, TextFont, TextColor)> {
         match self {
-            Self::PlainText(text) => TextBundle::from_section(text, default_style.clone()),
-            Self::RichText(entries) => TextBundle::from_sections(entries.iter().map(|entry| {
-                TextSection {
-                    value: entry.text.clone(),
-                    style: TextStyle {
-                        font: entry
-                            .font
-                            .as_ref()
-                            .cloned()
-                            .unwrap_or_else(|| default_style.font.clone()),
-                        font_size: entry.size.unwrap_or(default_style.font_size),
-                        color: entry.color.unwrap_or(default_style.color),
-                    },
-                }
-            })),
+            Self::PlainText(text) => vec![(
+                Text::new(text),
+                default_font.clone(),
+                default_font_color.clone(),
+            )],
+            Self::RichText(entries) => {
+                (entries
+                    .iter()
+                    .map(|entry| {
+                        (
+                            Text::new(entry.text),
+                            TextFont {
+                                font: entry
+                                    .font
+                                    .as_ref()
+                                    .cloned()
+                                    .unwrap_or_else(|| default_font.font.clone()),
+                                font_size: entry.size.unwrap_or(default_font.font_size),
+                                line_height: None,
+                                font_smoothing: None,
+                            },
+                            || -> TextColor {
+                                let given_color = entry.color.unwrap_or_else(|| {});
+                                if (given_color == None) {
+                                    return default_font_color.clone();
+                                } else {
+                                    return TextColor::from(given_color);
+                                }
+                            }(),
+                        )
+                    })
+                    .collect())
+            }
         }
     }
 

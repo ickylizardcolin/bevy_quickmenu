@@ -138,7 +138,7 @@ fn root_menu(state: &BasicState) -> Menu<Screens> {
         vec![
             MenuItem::headline([
                 RichTextEntry::new("Rich "),
-                RichTextEntry::new_color("Text ", Color::srgb(1.0,0.0,0.0)),
+                RichTextEntry::new_color("Text ", Color::srgb(1.0, 0.0, 0.0)),
                 RichTextEntry::new_color("!", Color::srgb(1.0, 1.0, 0.0)),
             ]),
             MenuItem::action("Close", Actions::Close).with_icon(MenuIcon::Back),
@@ -160,7 +160,7 @@ fn boolean_menu(state: &BasicState) -> Menu<Screens> {
             MenuItem::action("Toggle Boolean 2", Actions::Toggle2).checked(state.boolean2),
         ],
     )
-    .with_background(BackgroundColor(Color::srgb(0.0,0.0,0.5)))
+    .with_background(BackgroundColor(Color::srgb(0.0, 0.0, 0.5)))
     .with_style(Style {
         align_items: AlignItems::FlexEnd,
         flex_direction: FlexDirection::Column,
