@@ -1,3 +1,13 @@
+Work of the original owner (not me)
+
+Upgraded to (hopefully) support bevyengine 0.16
+
+Specify in your Cargo.toml:
+```
+[dependencies]
+bevy_quickmenu = "0.6.0"
+```
+
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](https://opensource.org/licenses/MIT)
 [![Doc](https://docs.rs/bevy_quickmenu/badge.svg)](https://docs.rs/bevy_quickmenu)
 [![Crate](https://img.shields.io/crates/v/bevy_quickmenu.svg)](https://crates.io/crates/bevy_quickmenu)
